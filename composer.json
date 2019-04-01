@@ -6,7 +6,7 @@
         "repregid/api-bundle": "dev-master"
     },
     "autoload": {
-        "psr-4": { "Repregid\\ApiSearchEngine\\": "" }
+        "psr-4": { "Repregid\\ApiSearchSphinx\\": "" }
     },
     "minimum-stability": "dev"
 }

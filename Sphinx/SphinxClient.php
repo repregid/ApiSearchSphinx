@@ -1,6 +1,6 @@
 <?php
 
-namespace Repregid\ApiSearchEngine\Sphinx;
+namespace Repregid\ApiSearchSphinx\Sphinx;
 
 //
 // $Id$

@@ -1,16 +1,33 @@
 <?php
 
-namespace Repregid\ApiSearchEngine\Sphinx;
-
+namespace Repregid\ApiSearchSphinx\Sphinx;
 
 use Repregid\ApiBundle\Service\Search\SearchEngineInterface;
 
 /**
  * Class Sphinx
- * @package Repregid\ApiSearchEngine\Sphinx
+ * @package Repregid\ApiSearchSphinx\Sphinx
  */
 class Sphinx implements SearchEngineInterface
 {
+    /**
+     * @var string
+     */
+    private $prefix;
+
+    /**
+     * @param $entityName
+     * @return string
+     */
+    public function buildIndex($entityName)
+    {
+        return $this->prefix.str_replace('\\', '_', strtolower($entityName));
+    }
+
+    public function setPrefix($prefix){
+        $this->prefix = $prefix;
+    }
+
     /**
      * @return SphinxClient
      */
@@ -27,7 +44,7 @@ class Sphinx implements SearchEngineInterface
      */
     public function findByTerm(string $term, string $target, array $fields = []) : array
     {
-        $target = str_replace('\\', '_', strtolower($target));
+        $target = $this->buildIndex($target);
         $term   = mb_strtolower($term, 'UTF-8');
         $term   = str_replace(' ', ' | ', $term);
 
