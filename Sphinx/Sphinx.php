@@ -46,7 +46,6 @@ class Sphinx implements SearchEngineInterface
     {
         $target = $this->buildIndex($target);
         $term   = mb_strtolower($term, 'UTF-8');
-        $term   = str_replace(' ', ' | ', $term);
 
         $client = $this->getClient();
 
@@ -62,11 +61,10 @@ class Sphinx implements SearchEngineInterface
         $result = [];
 
         foreach($matches['matches'] as $match) {
-            if (!isset($match['attrs']['idx'])) {
+            if (!isset($match['attrs']['idx'], $match['weight'])) {
                 continue;
             }
-
-            $result[] = $match['attrs']['idx'];
+            $result[] = ['idx' => $match['attrs']['idx'], 'weight' => $match['weight']];
         }
 
         return $result;
