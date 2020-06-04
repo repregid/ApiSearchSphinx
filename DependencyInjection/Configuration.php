@@ -16,8 +16,13 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('repregid_api_search_sphinx');
+        $treeBuilder = new TreeBuilder('repregid_api_search_sphinx');
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            // symfony < 4.2 support
+            $rootNode = $treeBuilder->root('repregid_api_search_sphinx');
+        }
 
         $rootNode
             ->children()
