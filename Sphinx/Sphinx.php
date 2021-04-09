@@ -44,6 +44,8 @@ class Sphinx implements SearchEngineInterface
      */
     public function findByTerm(string $term, string $target, array $fields = []) : array
     {
+        $origTarget = $target;
+        $origTerm = $term;
         $target = $this->buildIndex($target);
         $term   = mb_strtolower($term, 'UTF-8');
 
@@ -51,11 +53,20 @@ class Sphinx implements SearchEngineInterface
 
         $client->SetMatchMode(SPH_MATCH_EXTENDED2);
         $client->SetRankingMode(SPH_RANK_SPH04);
+        
+        $extraWeight = $fields['extraWeight'] ?? 0;
+            
+        $client->SetSelect("*, (weight()+ $extraWeight) AS customweight");
 
+        $client->SetSortMode(SPH_SORT_ATTR_DESC, 'customweight');
         $matches = $client->query($term, $target);
 
         if (!isset($matches['matches'])) {
-            return [];
+            if (($fields['extraWeight'] ?? null) === null) {
+                return [];
+            } else {
+                return $this->findByTerm($origTerm, $origTarget);
+            }
         }
 
         $result = [];
@@ -64,7 +75,7 @@ class Sphinx implements SearchEngineInterface
             if (!isset($match['attrs']['idx'], $match['weight'])) {
                 continue;
             }
-            $result[] = ['idx' => $match['attrs']['idx'], 'weight' => $match['weight']];
+            $result[] = ['idx' => $match['attrs']['idx'], 'weight' => $match['attrs']['customweight']];
         }
 
         return $result;
