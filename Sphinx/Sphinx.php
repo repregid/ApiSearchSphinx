@@ -24,7 +24,8 @@ class Sphinx implements SearchEngineInterface
         return $this->prefix.str_replace('\\', '_', strtolower($entityName));
     }
 
-    public function setPrefix($prefix){
+    public function setPrefix($prefix)
+    {
         $this->prefix = $prefix;
     }
 
@@ -75,7 +76,7 @@ class Sphinx implements SearchEngineInterface
             if (!isset($match['attrs']['idx'], $match['weight'])) {
                 continue;
             }
-            $result[] = ['idx' => $match['attrs']['idx'], 'weight' => $match['attrs']['customweight']];
+            $result[] = ['idx' => $match['attrs']['idx'], 'weight' => $match['attrs']['customweight'], 'attrs' => $match['attrs']];
         }
 
         return $result;
