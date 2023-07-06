@@ -58,7 +58,7 @@ class Sphinx implements SearchEngineInterface
         $extraWeight = $fields['extraWeight'] ?? 0;
             
         $client->SetSelect("*, (weight()+ $extraWeight) AS customweight");
-
+        $client->SetLimits(0, 100);
         $client->SetSortMode(SPH_SORT_ATTR_DESC, 'customweight');
         $matches = $client->query($term, $target);
 
